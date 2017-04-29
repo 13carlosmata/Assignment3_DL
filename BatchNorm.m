@@ -1,4 +1,4 @@
-function [Wstar,bstar,JK] = BatchNorm(X, Y, GD, W,b, lambda, L)
+function [Wstar,bstar,JK,u,V] = BatchNorm(X, Y, GD, W,b, lambda, L)
 N=size(X,2);
 [J] = ComputeCost(X,Y,W,b,lambda,L);
 JK=[J];
@@ -20,22 +20,24 @@ for i=1:GD.n_epochs
         Ybatch = Y(:, inds);
         [P,h,s] = EvaluateClassifier(Xbatch, W, b, L);
         % mean and variances for un-normalized scores
+        re=s{1};
         for kun=1:L
             for l=1:size(s{kun},2)
                 u{kun}=sum(s{kun}(:,l));
             end
             u{kun}=u{kun}/size(s{kun},2);
             ml=size(s{kun},1);
-            Vp=[];
-            for jun=1:ml
-                for ix=1:size(s{kun},2)
-                    v=sum((s{kun}(jun,ix)-u{kun}).^2);
-                end
-                v=v/size(s{kun},2);
-                Vp=[Vp,v];
-            end
-            V{kun}=Vp;
-            s{kun}=(diag(V{kun})^0.5)*(s{kun}-u{kun});
+%             Vp=[];
+%             for jun=1:ml
+%                 for ix=1:size(s{kun},2)
+%                     v=sum((s{kun}(jun,ix)-u{kun}).^2);
+%                 end
+%                 v=v/size(s{kun},2);
+%                 Vp=[Vp,v];
+%             end
+%             V{kun}=Vp;
+            V{kun}=(var(s{kun},0,2))*(size(s{kun},2)-1) / size(s{kun},2);
+            s{kun}=(diag(V{kun}+8.9e-12)^-0.5)*(s{kun}-u{kun});
         end
         %%%%%%%%%%%%%%%%%%%%%       
         [grad_W,grad_b] = ComputeGrad3(Xbatch,Ybatch,W,b,P,h,s,lambda,L);
