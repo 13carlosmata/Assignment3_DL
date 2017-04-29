@@ -13,7 +13,11 @@ for i=1:L-1
         b{i} = mean + std.*randn(m(i),1);
     end
 end
-W{L} = mean + std.*randn(K,m(i));
-b{L} = mean + std.*randn(K,1);
-
+if L~=1
+    W{L} = mean + std.*randn(K,m(i));
+    b{L} = mean + std.*randn(K,1);
+else
+    W{1} = mean + std.*randn(K,d);
+    b{1} = mean + std.*randn(K,1);
+end
 end

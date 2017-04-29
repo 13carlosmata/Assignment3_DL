@@ -1,15 +1,14 @@
 addpath 'cifar-10-batches-mat';
-clear all;
-close all;
-
+clear all
+close all
 %% Reading data and initialize the parameters of the network
 fprintf('   --> Running Code \n'); 
 fprintf('GD parameters '); 
 GD=GDparams;
 GD.n_batch=100;
-GD.n_epochs=30;
-GD.eta=0.0385;
-lambda=0;            fprintf('- done\n'); 
+GD.n_epochs=5;
+GD.eta=0.03;
+lambda=0.000001;            fprintf('- done\n'); 
 %%  Loading Batches from CIFAR  (for training, validation and testing
 fprintf('Loading Batch '); 
 [trainX, trainY, trainy] = LoadBatch('data_batch_1');              
@@ -23,12 +22,12 @@ fprintf('- done\n');      fprintf('Running substractions with mean_X ');
 
 valX = valX - repmat(mean_trainX, [1, size(valX, 2)]);
 testX = testX - repmat(mean_trainX, [1, size(testX, 2)]);
-fprintf('- done\n');
+fprintf('- donsizee\n');
 %% Initiating parameters
 
 fprintf('Initialization of W{} and b{} ');
-L=3; % amount of layers
-m = [50,30]; % amount of nodes per layer
+L=2; % amount of layers
+m = repmat(50,1,L-1); % amount of nodes per layer
 K = 10; %labels
 d=size(trainX,1); % amount of images 
 [W,b] = InitParams(d,m,K,L); fprintf('- done \n');
@@ -41,8 +40,12 @@ fprintf('Computing Cost ');
 fprintf('      > Initial Loss = %f\n', J);
 %%
 fprintf('Computing Accuracy ');
-acc = ComputeAccuracy(trainX,trainY,W,b,L);
+acc = ComputeAccuracy(trainX,trainY,W,b,L);         fprintf('- done \n');
+fprintf('      > Initial ACC = %f\n',acc);
 %%
 fprintf('Computing Gradients ');
-[LW,Lb,JW,Jb] = ComputeGradients(trainX, trainY, P, W,b, h, s1, lambda);    fprintf('- done \n');
-
+[grad_W,grad_b] = ComputeGrad3(trainX,trainY,W,b,P,h,s,lambda,L);  fprintf('- done \n');
+%% 
+fprintf('Minibatch \n');
+[Wstar,bstar,JK] = MiniBatchGD(trainX, trainY, GD, W,b, lambda, L);
+plot(JK)
