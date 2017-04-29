@@ -76,11 +76,13 @@ acc_test = ComputeAccuracy(testX,testY,Wnorm,bnorm,L);
 fprintf('      > ACC for Testing data = %f\n',acc_test);
 
 %%
+fig_i=figure;
 plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_norm,0:GD.n_epochs,JK_val);
 legend(['Train - UNnorm','     ',num2str(acc_New),'%'],...
     ['Train - Norm','   ',num2str(acc_norm),'%'],...
     ['Val - Norm','   ',num2str(acc_New_val),'%']);
-% title(['Parameters used: ', ' n.batch: ',num2str(GD.n_batch),' epochs: ',num2str(GD.n_epochs),' eta: ',num2str(GD.eta),' lambda: ',num2str(lambda), ' k-layers: ',num2str(L)],'FontSize',15);
-% 
+title(['Parameters used: ', ' n.batch: ',num2str(GD.n_batch),' epochs: ',num2str(GD.n_epochs),' eta: ',num2str(GD.eta),' lambda: ',num2str(lambda), ' k-layers: ',num2str(L)],'FontSize',9);
+saveas(fig_i,['C:\Users\cmata_oloq6sf\Dropbox\Medical Engineering\II Semestre\Deep Learning\Assignment3_DL\fig\','h',num2str(hour(datetime)),'m',num2str(minute(datetime)),'s',num2str(second(datetime),2),'.jpg']);
+close (fig_i)
 fprintf('\n Code ran succesfully \n')
 
