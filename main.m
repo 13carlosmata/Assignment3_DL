@@ -7,8 +7,8 @@ fprintf('GD parameters ');
 GD=GDparams;
 GD.n_batch=100;
 GD.n_epochs=30;
-GD.eta=0.0385;
-lambda=0.00001;            fprintf('- done\n'); 
+GD.eta=0.028;
+lambda=0.000001;            fprintf('- done\n'); 
 %%  Loading Batches from CIFAR  (for training, validation and testing
 fprintf('Loading Batch '); 
 [trainX, trainY, trainy] = LoadBatch('data_batch_1');              
@@ -26,8 +26,9 @@ fprintf('- donsizee\n');
 %% Initiating parameters
 
 fprintf('Initialization of W{} and b{} ');
-L=2; % amount of layers
-m = repmat(50,1,L-1); % amount of nodes per layer
+L=3; % amount of layers
+% m = repmat(50,1,L-1); % amount of nodes per layer
+m = [50,30];
 K = 10; %labels
 d=size(trainX,1); % amount of images 
 [W,b] = InitParams(d,m,K,L); fprintf('- done \n');
@@ -48,9 +49,20 @@ fprintf('Computing Gradients ');
 %% 
 fprintf('Minibatch ');
 [Wstar,bstar,JK] = MiniBatchGD(trainX, trainY, GD, W,b, lambda, L); fprintf('- done \n');
+fprintf('Checking Validated data ');
 [Wstar_val,bstar_val,JK_val] = MiniBatchGD(valX, valY, GD, W,b, lambda, L); fprintf('done \n');
-plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_val);
+
 %%
-acc_new = ComputeAccuracy(valX,valY,Wstar,bstar,L); 
-fprintf('      > New ACC = %f\n',acc_new);
+acc_New = ComputeAccuracy(trainX,trainY,Wstar,bstar,L); 
+fprintf('      > New ACC = %f\n',acc_New);
+acc_New_val = ComputeAccuracy(valX,valY,Wstar,bstar,L); 
+fprintf('      > New ACC = %f\n',acc_New_val);
+
+plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_val);
+legend(['training loss','     ',num2str(acc_New),'%'],...
+    ['validation loss','   ',num2str(acc_New_val),'%']);
+title(['Parameters used: ', ' n.batch: ',num2str(GD.n_batch),' epochs: ',num2str(GD.n_epochs),' eta: ',num2str(GD.eta),' lambda: ',num2str(lambda), ' k-layers: ',num2str(L)],'FontSize',15);
+
+
 fprintf('\n Code ran succesfully \n')
+
