@@ -6,9 +6,9 @@ fprintf('   --> Running Code \n');
 fprintf('GD parameters '); 
 GD=GDparams;
 GD.n_batch=100;
-GD.n_epochs=5;
-GD.eta=0.03;
-lambda=0.000001;            fprintf('- done\n'); 
+GD.n_epochs=30;
+GD.eta=0.0385;
+lambda=0.00001;            fprintf('- done\n'); 
 %%  Loading Batches from CIFAR  (for training, validation and testing
 fprintf('Loading Batch '); 
 [trainX, trainY, trainy] = LoadBatch('data_batch_1');              
@@ -46,6 +46,11 @@ fprintf('      > Initial ACC = %f\n',acc);
 fprintf('Computing Gradients ');
 [grad_W,grad_b] = ComputeGrad3(trainX,trainY,W,b,P,h,s,lambda,L);  fprintf('- done \n');
 %% 
-fprintf('Minibatch \n');
-[Wstar,bstar,JK] = MiniBatchGD(trainX, trainY, GD, W,b, lambda, L);
-plot(JK)
+fprintf('Minibatch ');
+[Wstar,bstar,JK] = MiniBatchGD(trainX, trainY, GD, W,b, lambda, L); fprintf('- done \n');
+[Wstar_val,bstar_val,JK_val] = MiniBatchGD(valX, valY, GD, W,b, lambda, L); fprintf('done \n');
+plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_val);
+%%
+acc_new = ComputeAccuracy(valX,valY,Wstar,bstar,L); 
+fprintf('      > New ACC = %f\n',acc_new);
+fprintf('\n Code ran succesfully \n')
