@@ -1,15 +1,13 @@
-
+function [params] = Fitting(lambda_i,eta_i,L_i)
 addpath 'cifar-10-batches-mat';
-clear all
-close all
 %% Reading data and initialize the parameters of the network
 fprintf('   --> Running Code \n'); 
 fprintf('GD parameters '); 
 GD=GDparams;
 GD.n_batch=100;
 GD.n_epochs=10;
-GD.eta=0.01;
-lambda=0.00001;            fprintf('- done\n'); 
+GD.eta=eta_i;
+lambda=lambda_i;            fprintf('- done\n'); 
 %%  Loading Batches from CIFAR  (for training, validation and testing
 fprintf('Loading Batch '); 
 [trainX, trainY, trainy] = LoadBatch('data_batch_1');              
@@ -27,7 +25,7 @@ fprintf('- done\n');
 %% Initiating parameters
 
 fprintf('Initialization of W{} and b{} ');
-L=3; % amount of layers
+L=L_i; % amount of layers
 % m = repmat(50,1,L-1); % amount of nodes per layer
 m = [50,50];
 K = 10; %labels
@@ -63,24 +61,24 @@ acc_New = ComputeAccuracy(trainX,trainY,Wstar,bstar,L);
 fprintf('Norm Minibatch ');
 [Wnorm,bnorm,JK_norm,u,v] = BatchNorm(trainX, trainY, GD, W,b, lambda, L); fprintf('- done \n');
 acc_norm = ComputeAccuracy(trainX,trainY,Wnorm,bnorm,L); 
-fprintf('      > ACC for Training data = %f\n',acc_norm);
 plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_norm);
 legend(['Unnormalized Batch','     ',num2str(acc_New),'%'],...
       ['Normalized Batch','   ',num2str(acc_norm),'%']);
 %
 fprintf('Checking Validated data ');
-[Wstar_val,bstar_val,JK_val] = BatchNorm(valX, valY, GD, W,b, lambda, L); fprintf('done \n');
-acc_New_val = ComputeAccuracy(valX,valY,Wnorm,bnorm,L); 
-fprintf('      > ACC for validated data = %f\n',acc_New_val);
-acc_test = ComputeAccuracy(testX,testY,Wnorm,bnorm,L); 
-fprintf('      > ACC for Testing data = %f\n',acc_test);
+[Wstar_val,bstar_val,JK_val] = MiniBatchGD(valX, valY, GD, W,b, lambda, L); fprintf('done \n');
 
+% %%
+% acc_New = ComputeAccuracy(trainX,trainY,Wstar,bstar,L); 
+% fprintf('      > New ACC = %f\n',acc_New);
+% acc_New_val = ComputeAccuracy(valX,valY,Wstar,bstar,L); 
+% fprintf('      > New ACC = %f\n',acc_New_val);
 %%
-plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_norm,0:GD.n_epochs,JK_val);
-legend(['Train - UNnorm','     ',num2str(acc_New),'%'],...
-    ['Train - Norm','   ',num2str(acc_norm),'%'],...
-    ['Val - Norm','   ',num2str(acc_New_val),'%']);
+
+%plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_norm);
+% legend(['training loss','     ',num2str(acc_New),'%'],...
+%     ['validation loss','   ',num2str(acc_New_val),'%']);
 % title(['Parameters used: ', ' n.batch: ',num2str(GD.n_batch),' epochs: ',num2str(GD.n_epochs),' eta: ',num2str(GD.eta),' lambda: ',num2str(lambda), ' k-layers: ',num2str(L)],'FontSize',15);
 % 
 fprintf('\n Code ran succesfully \n')
-
+params={lambda,GD.eta,L,JK_norm,acc_norm};

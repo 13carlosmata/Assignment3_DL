@@ -12,8 +12,8 @@ for i=1:n
 end
 g=G1;
 for j=k:-1:1
-    grad_b{j}=zeros(size(W{j}));
-    grad_W{j}=zeros(size(b{j}));
+    grad_b{j}=zeros(size(b{j}));
+    grad_W{j}=zeros(size(W{j}));
     gb=zeros(size(b{j}));
     gW=zeros(size(W{j}));
     gW1=zeros(size(W{j}));
@@ -24,7 +24,7 @@ for j=k:-1:1
         end
         gW1=gW1+g'*X';
     else
-        for j2=1:size(h{j-1},2)
+        for j2=1:size(Y,2)
             gb=gb+g(j2,:)';
             %gW=gW+g(j2,:)'*(h{j-1}(:,j2))';
         end
