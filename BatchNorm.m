@@ -37,7 +37,8 @@ for i=1:GD.n_epochs
 %             end
 %             V{kun}=Vp;
             V{kun}=(var(s{kun},0,2))*(size(s{kun},2)-1) / size(s{kun},2);
-            s{kun}=(diag(V{kun}+8.9e-12)^-0.5)*(s{kun}-u{kun});
+            s{kun}=(diag(V{kun})^-0.5)*(s{kun}-u{kun});
+            h{kun}=max(0,s{kun});
         end
         %%%%%%%%%%%%%%%%%%%%%       
         [grad_W,grad_b] = ComputeGrad3(Xbatch,Ybatch,W,b,P,h,s,lambda,L);
