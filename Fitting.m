@@ -28,7 +28,7 @@ fprintf('- done\n');
 fprintf('Initialization of W{} and b{} ');
 L=L_i; % amount of layers
 % m = repmat(50,1,L-1); % amount of nodes per layer
-m = [50,50];
+m = [50,30];
 K = 10; %labels
 d=size(trainX,1); % amount of images 
 [W,b] = InitParams(d,m,K,L); fprintf('- done \n');
@@ -63,6 +63,7 @@ fprintf('Norm Minibatch ');
 [Wnorm,bnorm,JK_norm,u,v] = BatchNorm(trainX, trainY, GD, W,b, lambda, L); fprintf('- done \n');
 acc_norm = ComputeAccuracy(trainX,trainY,Wnorm,bnorm,L); 
 fprintf('      > ACC for Training data = %f\n',acc_norm);
+%figure
 %plot(0:GD.n_epochs,JK,0:GD.n_epochs,JK_norm);
 % legend(['Unnormalized Batch','     ',num2str(acc_New),'%'],...
 %       ['Normalized Batch','   ',num2str(acc_norm),'%']);
@@ -81,7 +82,7 @@ legend(['Train - UNnorm','     ',num2str(acc_New),'%'],...
     ['Train - Norm','   ',num2str(acc_norm),'%'],...
     ['Val - Norm','   ',num2str(acc_New_val),'%']);
 title(['Parameters used: ', ' n.batch: ',num2str(GD.n_batch),' epochs: ',num2str(GD.n_epochs),' eta: ',num2str(GD.eta),' lambda: ',num2str(lambda), ' k-layers: ',num2str(L)],'FontSize',7);
-saveas(fig_i,['C:\Users\cmata_oloq6sf\Dropbox\Medical Engineering\II Semestre\Deep Learning\Assignment3_DL\fig\','h',num2str(hour(datetime)),'m',num2str(minute(datetime)),'s',num2str(second(datetime),2),'.jpg']);
+saveas(fig_i,['C:\Users\cmata_oloq6sf\Dropbox\Medical Engineering\II Semestre\Deep Learning\Assignment3_DL\fig\rates\','h',num2str(hour(datetime)),'m',num2str(minute(datetime)),'s',num2str(second(datetime),2),'.jpg']);
 close(fig_i)
 fprintf('\n Code ran succesfully \n')
 

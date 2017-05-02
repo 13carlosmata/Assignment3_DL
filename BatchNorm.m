@@ -7,7 +7,9 @@ rho=0.9;
 et=GD.eta;
 for init=1:L
     v_W{init}=zeros(size(W{init})); 
-    v_b{init}=zeros(size(b{init}));    
+    v_b{init}=zeros(size(b{init}));   
+    V{init}={};
+    u{init}=0;
 end
 wb = waitbar(0,'1','Name','Minibatch progress');
 for i=1:GD.n_epochs
@@ -20,7 +22,6 @@ for i=1:GD.n_epochs
         Ybatch = Y(:, inds);
         [P,h,s] = EvaluateClassifier(Xbatch, W, b, L);
         % mean and variances for un-normalized scores
-        re=s{1};
         for kun=1:L
             for l=1:size(s{kun},2)
                 u{kun}=sum(s{kun}(:,l));
