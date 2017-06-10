@@ -1,34 +1,25 @@
-function [grad_W,grad_b] = ComputeGradients(X, Y, W, b,P, h, s, lambda)
+function [grad_W,grad_b] = ComputeGradients(X,Y,W,b,P,h,s,lambda,k)
 n=size(X,2);
 grad_W={};
 grad_b={};
 n=size(W,2);
 g=-(Y-P)';
-grad_b{1:n}=g;
-% 
-% for i=1:n
-%     %individuales
-%     Pi=P(:,i);
-%     Yt=(Y(:,i))';
-%     Xt=(X(:,i))';
-%     %ops
-%     g=-Yt/(Yt*Pi) * (diag(Pi)-Pi*(Pi)');
-%     Lb{2}=Lb{2}+g';
-%     LW{2}=LW{2}+((g')*h(:,i)');
-%     
-%     g=g*W{2};
-%     g=g*diag(s1(:,i)>0);
-%     Lb{1}=Lb{1}+g';
-%     LW{1}=LW{1}+((g')*Xt);
-% end
-% 
-% LW{1}=LW{1}/n;
-% LW{2}=LW{2}/n;
-% Lb{1}=Lb{1}/n;
-% Lb{2}=Lb{2}/n;
-% %For regularization
-% JW{1}=LW{1}+2*lambda*W{1};
-% JW{2}=LW{2}+2*lambda*W{2};
-% Jb{1}=Lb{1};
-% Jb{2}=Lb{2};
-% end
+size(g)
+if k>1
+    for i=k:-1:2
+        grad_b{i}=g;
+        grad_W{i}=g'*h{i-1}'+2*lambda*W{i};
+        if i>1
+            size(W{i})
+            g=g*W{i};
+            size(g)
+            size(h{i-1})
+            g=g*sign(h{i});
+            size(diag(s{i-1}>0))
+            g=g*diag(s{i-1}>0);
+        end
+    end
+end
+grad_b{1}=g;
+grad_W{1}=g'*X'+2*lambda*W{1};
+end

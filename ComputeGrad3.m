@@ -20,13 +20,11 @@ for j=k:-1:1
     if j==1
         for j1=1:size(X,2)
             gb=gb+g(j1,:)';
-            %gW=gW+g(j1,:)'*X(:,j1)';
         end
         gW1=gW1+g'*X';
     else
         for j2=1:size(Y,2)
             gb=gb+g(j2,:)';
-            %gW=gW+g(j2,:)'*(h{j-1}(:,j2))';
         end
         gW1=gW1+g'*h{j-1}';
     end
@@ -36,5 +34,4 @@ for j=k:-1:1
         g=g*W{j}.*sign(h{j-1}');
     end
 end
-
 end

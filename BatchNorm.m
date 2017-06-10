@@ -1,7 +1,9 @@
-function [Wstar,bstar,JK,u,V] = BatchNorm(X, Y, GD, W,b, lambda, L)
+function [Wstar,bstar,JK,u,V,JK_val] = BatchNorm(X, Y,valX,valY, GD, W,b, lambda, L)
 N=size(X,2);
 [J] = ComputeCost(X,Y,W,b,lambda,L);
 JK=[J];
+[J2] = ComputeCost(valX,valY,W,b,lambda,L);
+JK_val=[J2];
 decay_rate=0.95;
 rho=0.9;
 et=GD.eta;
@@ -28,19 +30,12 @@ for i=1:GD.n_epochs
             end
             u{kun}=u{kun}/size(s{kun},2);
             ml=size(s{kun},1);
-%             Vp=[];
-%             for jun=1:ml
-%                 for ix=1:size(s{kun},2)
-%                     v=sum((s{kun}(jun,ix)-u{kun}).^2);
-%                 end
-%                 v=v/size(s{kun},2);
-%                 Vp=[Vp,v];
-%             end
-%             V{kun}=Vp;
             V{kun}=(var(s{kun},0,2))*(size(s{kun},2)-1) / size(s{kun},2);
             s{kun}=(diag(V{kun})^-0.5)*(s{kun}-u{kun});
             h{kun}=max(0,s{kun});
         end
+        u{kun}=0.9*(u{kun})+(1-0.99)*u{kun};
+        V{kun}=0.9*(V{kun})+(1-0.99)*V{kun};
         %%%%%%%%%%%%%%%%%%%%%       
         [grad_W,grad_b] = ComputeGrad3(Xbatch,Ybatch,W,b,P,h,s,lambda,L);
         for k=1:L
@@ -56,6 +51,8 @@ for i=1:GD.n_epochs
     end
     [J] = ComputeCost(X,Y,W,b,lambda,L);
     JK=[JK;J];
+    [J2] = ComputeCost(valX,valY,W,b,lambda,L);
+    JK_val=[JK_val;J2];
     Wstar=W;
     bstar=b;
     et=et*decay_rate;

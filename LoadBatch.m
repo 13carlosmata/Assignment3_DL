@@ -3,7 +3,6 @@ load('batches.meta.mat')
 A = load (filename);
 I = reshape(A.data',32,32,3,10000);
 I = permute(I, [2,1,3,4]);
-%montage(I(:,:,:,:),'Size',[5,5]);
 Y = zeros(10,10000);
 X = im2double(I);
 for i=1:10000

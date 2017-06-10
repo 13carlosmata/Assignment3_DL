@@ -1,7 +1,9 @@
-function [Wstar,bstar,JK] = MiniBatchGD(X, Y, GD, W,b, lambda, L)
+function [Wstar,bstar,JK,JK_val] = MiniBatchGD(X, Y,valX,valY, GD, W,b, lambda, L)
 N=size(X,2);
 [J] = ComputeCost(X,Y,W,b,lambda,L);
+[J2] = ComputeCost(valX,valY,W,b,lambda,L);
 JK=[J];
+JK_val=[J2];
 decay_rate=0.95;
 rho=0.9;
 et=GD.eta;
@@ -33,6 +35,8 @@ for i=1:GD.n_epochs
     end
     [J] = ComputeCost(X,Y,W,b,lambda,L);
     JK=[JK;J];
+    [J2] = ComputeCost(valX,valY,W,b,lambda,L);
+    JK_val=[JK_val;J2];
     Wstar=W;
     bstar=b;
     et=et*decay_rate;

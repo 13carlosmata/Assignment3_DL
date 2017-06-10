@@ -16,4 +16,3 @@ end
 J1=lcross/n;    
 J=J1+J2;
 end
-
